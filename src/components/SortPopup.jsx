@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef, memo } from "react";
+import PropTypes from "prop-types";
 
-const SortPopup = memo(function SortPopup({ items }) {
+const SortPopup = memo(function SortPopup({
+    items,
+    activeSortType,
+    onClickSortType,
+}) {
     const [visiblePopup, setVisiblePopup] = useState(false);
-    const [activeItem, setActiveItem] = useState(0);
 
-    const activeLable = items[activeItem].name;
+    const activeLable = items.find((obj) => obj.type === activeSortType).name;
 
     const sortRef = useRef();
 
@@ -23,7 +27,9 @@ const SortPopup = memo(function SortPopup({ items }) {
     }, []);
 
     const onSelectedItem = (index) => {
-        setActiveItem(index);
+        if (onClickSortType) {
+            onClickSortType(index);
+        }
         setVisiblePopup(false);
     };
 
@@ -52,10 +58,12 @@ const SortPopup = memo(function SortPopup({ items }) {
                         {items &&
                             items.map((obj, index) => (
                                 <li
+                                    onClick={() => onSelectedItem(obj)}
                                     className={
-                                        activeItem === index ? "active" : ""
+                                        activeSortType === obj.type
+                                            ? "active"
+                                            : ""
                                     }
-                                    onClick={() => onSelectedItem(index)}
                                     key={`${obj.type}_${index}`}
                                 >
                                     {obj.name}
@@ -67,5 +75,15 @@ const SortPopup = memo(function SortPopup({ items }) {
         </div>
     );
 });
+
+SortPopup.propTypes = {
+    items: PropTypes.arrayOf(PropTypes.object).isRequired,
+    activeSortType: PropTypes.string.isRequired,
+    onClickSortType: PropTypes.func.isRequired,
+};
+
+SortPopup.defaultProps = {
+    items: [],
+};
 
 export default SortPopup;
