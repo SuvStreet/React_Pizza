@@ -76,7 +76,7 @@ function Home() {
                               onClickAddPizza={hendleAddPizzaToCart}
                               key={obj.id}
                               addedCount={
-                                  cartItems[obj.id] && cartItems[obj.id].length
+                                  cartItems[obj.id] && cartItems[obj.id].items.length
                               }
                               {...obj}
                           />
